@@ -1,8 +1,36 @@
-# Welcome to your Expo app 👋
+# ABCDE Method - mobile app
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is a mobile task management app built around the **ABCDE priority method**. It helps users organize tasks by importance, mark them as done, add new tasks, save them locally in AsyncStorage, and delete tasks when they are no longer needed.
 
-## Get started
+The app also introduces a simple **ABCDE note assignment system**, where every task gets a priority label:
+
+ <ol type="A">
+  <li>Most important tasks that must be done today</li>
+  <li>Important tasks, but not as urgent as A</li>
+  <li>Low-priority tasks</li>
+  <li>Tasks that can be delegated</li>
+  <li>Tasks that can be done only after everything else is finished</li>
+</ol>
+
+<p align="center">
+  <img src="./assets/abcde_app1.png" width="48%" style="border-radius: 20px;" />
+  <img src="./assets/abcde_app2.png" width="48%" style="border-radius: 20px;" />
+</p>
+
+## ⚙️ Technologies
+
+[![My Skills](https://skillicons.dev/icons?i=react,ts,js,css,figma)](https://skillicons.dev)
+
+## ⭐ Features
+
+- Marking tasks as done
+- Adding tasks
+- Saving tasks in async storage
+- Deleting tasks
+- Organize tasks using the ABCDE method
+- Use a simple ABCDE note assignment system for task prioritization
+
+## 🚦 Get Started
 
 1. Install dependencies
 
@@ -16,35 +44,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+## 🔎 See Also
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- [My Website](https://pj-portfolio-cv.vercel.app)
+- [My GitHub profile](https://github.com/OKE225)
