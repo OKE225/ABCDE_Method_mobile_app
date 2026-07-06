@@ -1,13 +1,14 @@
 import { Pressable, Text, View } from "react-native";
 import React, { ReactNode, useState } from "react";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { router } from "expo-router";
 
 interface TaskProps {
+  id: string;
   children: ReactNode;
   tag: string;
 }
 
-const Task = ({ children, tag }: TaskProps) => {
+const Task = ({ children, tag, id }: TaskProps) => {
   const [isTaskDone, setIsTaskDone] = useState<boolean>(false);
 
   let taskColors = {
@@ -28,20 +29,32 @@ const Task = ({ children, tag }: TaskProps) => {
   return (
     <Pressable
       onPress={() => setIsTaskDone((prev) => !prev)}
-      onLongPress={() => console.log("Long Press")}
+      onLongPress={() =>
+        router.push({
+          pathname: "/details",
+          params: {
+            tag,
+            title: String(children),
+            id,
+            isTaskDoneString: String(isTaskDone),
+            bgColor: taskColors.bgColor,
+            badgeColor: taskColors.badgeColor,
+          },
+        })
+      }
       style={{
         backgroundColor: isTaskDone
           ? taskColors.bgColor + "40"
           : taskColors.bgColor,
         padding: 14,
         borderRadius: 10,
-        marginBottom: 12,
       }}>
       <View
         style={{
           flexDirection: "row",
           alignItems: "center",
           marginBottom: 6,
+          position: "relative",
         }}>
         {/* {isTaskDone && (
           <Ionicons name="checkmark-circle-outline" size={20} color="#000" />
@@ -52,11 +65,12 @@ const Task = ({ children, tag }: TaskProps) => {
               ? taskColors.badgeColor + "40"
               : taskColors.badgeColor,
             color: "#fff",
-            paddingHorizontal: 6,
+            paddingHorizontal: 5,
             borderRadius: 4,
-            fontSize: 10,
+            fontSize: 12,
             position: "absolute",
             right: 0,
+            top: 0,
           }}>
           {tag}
         </Text>
@@ -64,10 +78,8 @@ const Task = ({ children, tag }: TaskProps) => {
       <Text
         style={{
           color: isTaskDone ? "#eee" : "#fff",
-          fontSize: 16,
+          fontSize: 20,
           textDecorationLine: isTaskDone ? "line-through" : "none",
-          //   paddingVertical: 14,
-          //   paddingHorizontal: 8,
         }}>
         {children}
       </Text>

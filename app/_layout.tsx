@@ -1,40 +1,20 @@
-import { Tabs } from "expo-router";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Stack } from "expo-router";
 
 export default function RootLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarStyle: {
-          backgroundColor: "#E5B299",
-        },
-        headerStyle: {
-          backgroundColor: "#E5B299",
-          shadowColor: "#BC8A5F",
-        },
-        headerTintColor: "#582f0e",
-        tabBarActiveTintColor: "#582f0e",
-        tabBarInactiveTintColor: "#BC8A5F",
-      }}>
-      <Tabs.Screen
-        name="index"
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="details"
         options={{
-          title: "Tasks List",
-          headerTitle: "ABCDE Method",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="list" size={size} color={color} />
-          ),
+          presentation: "formSheet",
+          sheetAllowedDetents: [0.125, 0.25],
+          sheetGrabberVisible: true,
+          sheetCornerRadius: 30,
+          headerBackButtonDisplayMode: "minimal",
+          title: "Details",
         }}
       />
-      <Tabs.Screen
-        name="add"
-        options={{
-          title: "Add Task",
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name="add-circle-outline" size={size} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+    </Stack>
   );
 }
