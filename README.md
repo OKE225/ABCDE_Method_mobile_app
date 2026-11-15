@@ -13,8 +13,8 @@ The app also introduces a simple **ABCDE note assignment system**, where every t
 </ol>
 
 <p align="center">
-  <img src="./assets/abcde_app1.png" width="48%" style="border-radius: 20px;" />
-  <img src="./assets/abcde_app2.png" width="48%" style="border-radius: 20px;" />
+  <img src="./assets/abcde-tasks-screen.png" width="49%" style="border-radius: 72px;" />
+  <img src="./assets/abcde-add-task-screen.png" width="49%" style="border-radius: 72px;" />
 </p>
 
 ## ⚙️ Technologies
