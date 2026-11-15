@@ -1,37 +1,51 @@
-import { Tabs } from "expo-router";
+import { colors } from "@/theme";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { Tabs } from "expo-router";
 
 export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
         tabBarStyle: {
-          backgroundColor: "#E5B299",
+          backgroundColor: colors.surface,
+          borderTopColor: colors.border,
+          paddingTop: 4,
+        },
+        tabBarActiveTintColor: colors.accent,
+        tabBarInactiveTintColor: colors.textSecondary,
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: "600",
         },
         headerStyle: {
-          backgroundColor: "#E5B299",
-          shadowColor: "#BC8A5F",
+          backgroundColor: colors.background,
+          shadowColor: "transparent",
+          borderBottomWidth: 1,
+          borderBottomColor: colors.border,
         },
-        headerTintColor: "#582f0e",
-        tabBarActiveTintColor: "#582f0e",
-        tabBarInactiveTintColor: "#BC8A5F",
+        headerTintColor: colors.textPrimary,
+        headerTitleStyle: {
+          fontSize: 20,
+          fontWeight: "700",
+        },
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: "Tasks List",
+          title: "Tasks",
           headerTitle: "ABCDE Method",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="list" size={size} color={color} />
+            <Ionicons name="layers-outline" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="add"
         options={{
-          title: "Add Task",
+          title: "Add",
+          headerTitle: "New Task",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="add-circle-outline" size={size} color={color} />
+            <Ionicons name="add" size={size + 2} color={color} />
           ),
         }}
       />

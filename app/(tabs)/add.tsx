@@ -1,15 +1,16 @@
-import { Pressable, Text, View } from "react-native";
+import { colors, radius, spacing, tagStyles } from "@/theme";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
 import {
-  TextInput,
-  SegmentedButtons,
-  Button,
-  Provider,
-  Portal,
   Modal,
-} from "react-native-paper";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import AntDesign from "@expo/vector-icons/AntDesign";
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
 const STORAGE_KEY = "tasksDatabase";
 
@@ -23,18 +24,19 @@ const AddScreen = () => {
 
     const newTask = {
       id: Date.now().toString(),
-      name: name,
-      tag: tag,
+      name,
+      tag,
       isDone: false,
     };
 
     try {
-      const existTasks = await AsyncStorage.getItem(STORAGE_KEY);
-      const tasks = existTasks ? JSON.parse(existTasks) : [];
+      const storedTasks = await AsyncStorage.getItem(STORAGE_KEY);
+      const tasks = storedTasks ? JSON.parse(storedTasks) : [];
 
-      const updateTasks = [...tasks, newTask];
-
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updateTasks));
+      await AsyncStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify([...tasks, newTask]),
+      );
 
       setName("");
       setTag("");
@@ -43,112 +45,313 @@ const AddScreen = () => {
     }
   };
 
+  const isDisabled = !name.trim() || !tag;
+
   return (
-    <Provider>
-      <View
-        style={{
-          backgroundColor: "#EDCDBB",
-          flex: 1,
-          justifyContent: "center",
-          padding: 16,
-        }}>
-        <TextInput
-          mode="outlined"
-          value={name}
-          onChangeText={setName}
-          placeholder="Enter Task Name"
-          outlineColor="#7D5A50"
-          activeOutlineColor="#5D4037"
-          textColor="#5D4037"
-          theme={{ colors: { onSurfaceVariant: "#8D6E63" } }}
-          style={{ backgroundColor: "#EDCDBB" }}
-        />
-        <Text style={{ marginTop: 32 }}>Choose Task Tag</Text>
-        <SegmentedButtons
-          value={tag}
-          onValueChange={setTag}
-          buttons={[
-            {
-              value: "A",
-              label: "A",
-              style: {
-                backgroundColor: tag === "A" ? "#ef4444" : "transparent",
-              },
-            },
-            {
-              value: "B",
-              label: "B",
-              style: {
-                backgroundColor: tag === "B" ? "#f97316" : "transparent",
-              },
-            },
-            {
-              value: "C",
-              label: "C",
-              style: {
-                backgroundColor: tag === "C" ? "#eab308" : "transparent",
-              },
-            },
-            {
-              value: "D",
-              label: "D",
-              style: {
-                backgroundColor: tag === "D" ? "#84cc16" : "transparent",
-              },
-            },
-            {
-              value: "E",
-              label: "E",
-              style: {
-                backgroundColor: tag === "E" ? "#06b6d4" : "transparent",
-              },
-            },
-          ]}
-        />
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      keyboardShouldPersistTaps="handled">
+      <Text style={styles.sectionTitle}>Task name</Text>
 
-        <View style={{ alignItems: "center", marginTop: 16 }}>
-          <Pressable onPress={() => setVisible(true)}>
-            <AntDesign name="info-circle" size={24} color="#666" />
-          </Pressable>
-        </View>
+      <TextInput
+        value={name}
+        onChangeText={setName}
+        placeholder="What needs to be done?"
+        placeholderTextColor={colors.textSecondary}
+        style={styles.input}
+      />
 
-        <Button
-          mode="contained"
-          onPress={handleSubmit}
-          disabled={!tag || !name}
-          style={{ marginTop: 64 }}
-          buttonColor="#7D5A50">
-          Add New Task
-        </Button>
+      <Text style={[styles.sectionTitle, styles.sectionSpacing]}>Priority</Text>
 
-        <Portal>
-          <Modal
-            visible={visible}
-            onDismiss={() => setVisible(false)}
-            contentContainerStyle={{
-              backgroundColor: "#E5B299",
-              padding: 20,
-              margin: 20,
-              borderRadius: 14,
-              gap: 8,
-            }}>
-            <Text>
-              A - The most important tasks, with the highest priority, that you
-              must complete today
-            </Text>
-            <Text>B - Less important tasks, but still very important</Text>
-            <Text>C - Tasks with the lowest priority</Text>
-            <Text>
-              D - Tasks that you can and should delegate to someone else
-            </Text>
-            <Text>
-              E - Tasks you can do only if you have completed everything else
-            </Text>
-          </Modal>
-        </Portal>
+      <View style={styles.tagRow}>
+        {Object.entries(tagStyles).map(([value, style]) => {
+          const isSelected = tag === value;
+
+          return (
+            <Pressable
+              key={value}
+              onPress={() => setTag(value)}
+              style={[
+                styles.tagButton,
+                {
+                  backgroundColor: isSelected ? style.soft : colors.surface,
+                  borderColor: isSelected ? style.color : colors.border,
+                },
+              ]}>
+              <Text
+                style={[
+                  styles.tagButtonText,
+                  {
+                    color: isSelected ? style.color : colors.textSecondary,
+                  },
+                ]}>
+                {value}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
-    </Provider>
+
+      {tag ? (
+        <View
+          style={[
+            styles.priorityPreview,
+            {
+              backgroundColor: tagStyles[tag].soft,
+              borderColor: tagStyles[tag].color,
+            },
+          ]}>
+          <Text
+            style={[
+              styles.priorityPreviewText,
+              { color: tagStyles[tag].color },
+            ]}>
+            {tag} — {tagStyles[tag].label}
+          </Text>
+          <Text style={styles.priorityPreviewDescription}>
+            {tagStyles[tag].description}
+          </Text>
+        </View>
+      ) : null}
+
+      <Pressable onPress={() => setVisible(true)} style={styles.infoButton}>
+        <AntDesign name="info-circle" size={18} color={colors.accent} />
+        <Text style={styles.infoButtonText}>What does ABCDE mean?</Text>
+      </Pressable>
+
+      <Pressable
+        onPress={handleSubmit}
+        disabled={isDisabled}
+        accessibilityRole="button"
+        accessibilityState={{ disabled: isDisabled }}
+        style={({ pressed }) => [
+          styles.submitButton,
+          (isDisabled || pressed) && styles.submitButtonDisabled,
+        ]}>
+        <Text
+          style={[
+            styles.submitButtonText,
+            isDisabled && styles.submitButtonTextDisabled,
+          ]}>
+          Add task
+        </Text>
+      </Pressable>
+
+      <Modal
+        visible={visible}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setVisible(false)}>
+        <Pressable
+          style={styles.modalBackdrop}
+          onPress={() => setVisible(false)}>
+          <Pressable style={styles.modal} onPress={() => {}}>
+            <Text style={styles.modalTitle}>ABCDE Method</Text>
+            <Text style={styles.modalSubtitle}>
+              Choose a priority that matches the task’s importance.
+            </Text>
+
+            {Object.entries(tagStyles).map(([key, value]) => (
+              <View key={key} style={styles.modalRow}>
+                <View
+                  style={[
+                    styles.modalBadge,
+                    {
+                      backgroundColor: value.soft,
+                      borderColor: value.color,
+                    },
+                  ]}>
+                  <Text style={[styles.modalBadgeText, { color: value.color }]}>
+                    {key}
+                  </Text>
+                </View>
+
+                <View style={styles.modalTextWrapper}>
+                  <Text style={styles.modalLabel}>{value.label}</Text>
+                  <Text style={styles.modalDescription}>
+                    {value.description}
+                  </Text>
+                </View>
+              </View>
+            ))}
+
+            <Pressable
+              onPress={() => setVisible(false)}
+              style={styles.modalCloseButton}>
+              <Text style={styles.modalCloseButtonText}>Got it</Text>
+            </Pressable>
+          </Pressable>
+        </Pressable>
+      </Modal>
+    </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  content: {
+    padding: spacing.md,
+    paddingBottom: spacing.xl,
+  },
+  sectionTitle: {
+    color: colors.textPrimary,
+    fontSize: 16,
+    fontWeight: "700",
+    marginBottom: spacing.sm,
+  },
+  sectionSpacing: {
+    marginTop: spacing.lg,
+  },
+  input: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: 14,
+    color: colors.textPrimary,
+    fontSize: 16,
+  },
+  tagRow: {
+    flexDirection: "row",
+    gap: spacing.sm,
+  },
+  tagButton: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: radius.md,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  tagButtonText: {
+    fontSize: 16,
+    fontWeight: "800",
+  },
+  priorityPreview: {
+    marginTop: spacing.md,
+    borderWidth: 1,
+    borderRadius: radius.md,
+    padding: spacing.md,
+  },
+  priorityPreviewText: {
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  priorityPreviewDescription: {
+    color: colors.textSecondary,
+    fontSize: 12,
+    lineHeight: 17,
+    marginTop: 4,
+  },
+  infoButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: spacing.sm,
+    marginTop: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  infoButtonText: {
+    color: colors.accent,
+    fontSize: 13,
+    fontWeight: "600",
+  },
+  submitButton: {
+    marginTop: spacing.lg,
+    backgroundColor: colors.accent,
+    borderRadius: radius.md,
+    paddingVertical: 16,
+    alignItems: "center",
+  },
+  submitButtonDisabled: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  submitButtonText: {
+    color: "#171008",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  submitButtonTextDisabled: {
+    color: colors.textSecondary,
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.75)",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: spacing.md,
+  },
+  modal: {
+    width: "100%",
+    backgroundColor: colors.surfaceElevated,
+    padding: spacing.lg,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  modalCloseButton: {
+    marginTop: spacing.md,
+    backgroundColor: colors.accent,
+    borderRadius: radius.md,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  modalCloseButtonText: {
+    color: "#171008",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  modalTitle: {
+    color: colors.textPrimary,
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: spacing.sm,
+  },
+  modalSubtitle: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: spacing.md,
+  },
+  modalRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: spacing.sm,
+    marginBottom: spacing.md,
+  },
+  modalBadge: {
+    width: 34,
+    height: 34,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalBadgeText: {
+    fontSize: 14,
+    fontWeight: "800",
+  },
+  modalTextWrapper: {
+    flex: 1,
+  },
+  modalLabel: {
+    color: colors.textPrimary,
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  modalDescription: {
+    color: colors.textSecondary,
+    fontSize: 12,
+    lineHeight: 17,
+    marginTop: 2,
+  },
+});
 
 export default AddScreen;
